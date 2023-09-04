@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("items")
@@ -15,9 +16,8 @@ class ItemController(
     @PostMapping
     fun createItem(
         @RequestBody request: ItemRequest
-    ): CreateResponse {
-        return itemService.createItem(request).run {
-            CreateResponse(this.id)
-        }
+    ): Mono<CreateResponse> {
+        return itemService.createItem(request)
+            .map { CreateResponse(it.id) }
     }
 }
