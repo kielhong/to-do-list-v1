@@ -10,6 +10,7 @@ plugins {
     kotlin("kapt") version "1.9.10"
     jacoco
     idea
+    `java-test-fixtures`
 }
 
 group = "com.widehouse"
