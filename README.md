@@ -3,5 +3,5 @@
 * Kotlin
 * QueryDsl
 * Spring WebFlux
-* websocket
+* WebSocket
 * MongoDB
