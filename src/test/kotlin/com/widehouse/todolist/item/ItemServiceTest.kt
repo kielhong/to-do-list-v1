@@ -7,11 +7,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.springframework.test.util.ReflectionTestUtils
-import org.springframework.test.util.ReflectionTestUtils.setField
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
-import java.util.UUID
 
 class ItemServiceTest : StringSpec() {
     private val itemRepository: ItemRepository = mockk()
