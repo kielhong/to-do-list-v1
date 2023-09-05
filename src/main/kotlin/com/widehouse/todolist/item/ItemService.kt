@@ -11,4 +11,16 @@ class ItemService(
     fun createItem(request: ItemRequest): Mono<Item> {
         return itemRepository.save(request.toEntity())
     }
+
+    fun updateItem(id: Long, request: ItemRequest): Mono<Item> {
+        return itemRepository.findById(id)
+            .map {
+                it.apply {
+                    update(request.title, request.status)
+                }
+            }
+            .flatMap {
+                itemRepository.save(it)
+            }
+    }
 }

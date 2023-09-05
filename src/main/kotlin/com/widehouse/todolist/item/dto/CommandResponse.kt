@@ -1,5 +1,5 @@
 package com.widehouse.todolist.item.dto
 
-data class CreateResponse(
+data class CommandResponse(
     val id: Long
 )

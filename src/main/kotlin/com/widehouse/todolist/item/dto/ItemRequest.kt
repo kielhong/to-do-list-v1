@@ -4,9 +4,10 @@ import com.widehouse.todolist.item.Item
 import com.widehouse.todolist.item.ItemStatus
 
 data class ItemRequest(
-    val title: String
+    val title: String,
+    val status: ItemStatus = ItemStatus.TODO
 ) {
-    fun toEntity(status: ItemStatus = ItemStatus.TODO): Item {
+    fun toEntity(): Item {
         return Item(
             id = 0L,
             title = title,
