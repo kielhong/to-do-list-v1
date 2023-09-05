@@ -36,7 +36,7 @@ class ItemServiceTest : StringSpec() {
             // given
             val id = 1L
             val request = ItemRequest("title doing", ItemStatus.DOING)
-            val updatedItem = ItemFixtures.doing(id)
+            val updatedItem = ItemFixtures.doing
             every { itemRepository.findById(id) } returns Mono.just(ItemFixtures.todo)
             every { itemRepository.save(any()) } returns Mono.just(updatedItem)
             // when

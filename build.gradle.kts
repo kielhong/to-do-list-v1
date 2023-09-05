@@ -41,6 +41,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
 
+    testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
+
     runtimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
 }
 
