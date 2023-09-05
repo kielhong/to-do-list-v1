@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
@@ -29,6 +30,29 @@ class ItemServiceTest : StringSpec() {
                     it.status shouldBe item.status
                 }
                 .verifyComplete()
+        }
+
+        "update Item" {
+            // given
+            val id = 1L
+            val request = ItemRequest("title doing", ItemStatus.DOING)
+            val updatedItem = ItemFixtures.doing(id)
+            every { itemRepository.findById(id) } returns Mono.just(ItemFixtures.todo)
+            every { itemRepository.save(any()) } returns Mono.just(updatedItem)
+            // when
+            val actual = service.updateItem(id, request)
+            // then
+            StepVerifier.create(actual)
+                .assertNext { it shouldBe updatedItem }
+                .verifyComplete()
+            verify {
+                itemRepository.save(
+                    withArg {
+                        it.title shouldBe request.title
+                        it.status shouldBe request.status
+                    }
+                )
+            }
         }
     }
 }

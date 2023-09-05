@@ -7,6 +7,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 class Item(
     @Id
     val id: Long,
-    val title: String,
-    val status: ItemStatus
-)
+    var title: String,
+    var status: ItemStatus
+) {
+    fun update(title: String, status: ItemStatus) {
+        this.title = title
+        this.status = status
+    }
+}

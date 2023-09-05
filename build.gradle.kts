@@ -68,6 +68,10 @@ tasks.jacocoTestReport {
     )
 }
 
+tasks.check {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
 idea {
     module {
         val kaptMain = file("build/generated/source/kapt/main")
