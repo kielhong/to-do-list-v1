@@ -9,7 +9,6 @@ data class ItemRequest(
 ) {
     fun toEntity(): Item {
         return Item(
-            id = 0L,
             title = title,
             status = status
         )

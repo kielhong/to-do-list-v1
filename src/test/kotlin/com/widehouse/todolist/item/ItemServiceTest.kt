@@ -7,8 +7,11 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.test.util.ReflectionTestUtils
+import org.springframework.test.util.ReflectionTestUtils.setField
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.util.UUID
 
 class ItemServiceTest : StringSpec() {
     private val itemRepository: ItemRepository = mockk()
@@ -36,7 +39,7 @@ class ItemServiceTest : StringSpec() {
             // given
             val id = 1L
             val request = ItemRequest("title doing", ItemStatus.DOING)
-            val updatedItem = ItemFixtures.doing(id)
+            val updatedItem = ItemFixtures.doing
             every { itemRepository.findById(id) } returns Mono.just(ItemFixtures.todo)
             every { itemRepository.save(any()) } returns Mono.just(updatedItem)
             // when

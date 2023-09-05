@@ -46,7 +46,7 @@ class ItemControllerTest(
         "item update" {
             // given
             val id = 2L
-            val updatedItem = ItemFixtures.doing(id)
+            val updatedItem = ItemFixtures.doing
             every { itemService.updateItem(any(), any()) } returns Mono.just(updatedItem)
             // when
             val request = mapOf("title" to "title doing", "status" to ItemStatus.DOING)
