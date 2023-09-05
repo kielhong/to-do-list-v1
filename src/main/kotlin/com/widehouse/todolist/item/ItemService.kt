@@ -11,4 +11,8 @@ class ItemService(
     fun createItem(request: ItemRequest): Mono<Item> {
         return itemRepository.save(request.toEntity())
     }
+
+    fun updateItem(id: Long, request: ItemRequest): Mono<Item> {
+        return Mono.empty()
+    }
 }
