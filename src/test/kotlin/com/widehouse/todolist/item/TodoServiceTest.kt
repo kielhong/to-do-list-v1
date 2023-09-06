@@ -9,7 +9,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TodoServiceTest : StringSpec() {
