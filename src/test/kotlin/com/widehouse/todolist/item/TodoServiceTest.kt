@@ -1,7 +1,7 @@
 package com.widehouse.todolist.item
 
-import com.widehouse.todolist.item.dto.ItemRequest
-import com.widehouse.todolistt.item.ItemFixtures
+import com.widehouse.todolist.item.dto.TodoRequest
+import com.widehouse.todolistt.item.TodoFixtures
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -10,17 +10,17 @@ import io.mockk.verify
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-class ItemServiceTest : StringSpec() {
-    private val itemRepository: ItemRepository = mockk()
-    private val service = ItemService(itemRepository)
+class TodoServiceTest : StringSpec() {
+    private val todoRepository: TodoRepository = mockk()
+    private val service = TodoService(todoRepository)
 
     init {
         "create Item" {
             // given
-            val item = ItemFixtures.todo
-            every { itemRepository.save(any()) } returns Mono.just(item)
+            val item = TodoFixtures.todo
+            every { todoRepository.save(any()) } returns Mono.just(item)
             // when
-            val request = ItemRequest("title")
+            val request = TodoRequest("title")
             val actual = service.createItem(request)
             // then
             StepVerifier.create(actual)
@@ -35,10 +35,10 @@ class ItemServiceTest : StringSpec() {
         "update Item" {
             // given
             val id = 1L
-            val request = ItemRequest("title doing", ItemStatus.DOING)
-            val updatedItem = ItemFixtures.doing
-            every { itemRepository.findById(id) } returns Mono.just(ItemFixtures.todo)
-            every { itemRepository.save(any()) } returns Mono.just(updatedItem)
+            val request = TodoRequest("title doing", TodoStatus.DOING)
+            val updatedItem = TodoFixtures.doing
+            every { todoRepository.findById(id) } returns Mono.just(TodoFixtures.todo)
+            every { todoRepository.save(any()) } returns Mono.just(updatedItem)
             // when
             val actual = service.updateItem(id, request)
             // then
@@ -46,7 +46,7 @@ class ItemServiceTest : StringSpec() {
                 .assertNext { it shouldBe updatedItem }
                 .verifyComplete()
             verify {
-                itemRepository.save(
+                todoRepository.save(
                     withArg {
                         it.title shouldBe request.title
                         it.status shouldBe request.status

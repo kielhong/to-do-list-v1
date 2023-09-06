@@ -7,9 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 @Document
-class Item(
+class Todo(
     var title: String,
-    var status: ItemStatus
+    var status: TodoStatus
 ) {
     @Id
     lateinit var id: String
@@ -20,7 +20,7 @@ class Item(
     @LastModifiedDate
     lateinit var updatedAt: LocalDateTime
 
-    fun update(title: String, status: ItemStatus) {
+    fun update(title: String, status: TodoStatus) {
         this.title = title
         this.status = status
     }

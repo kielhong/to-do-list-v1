@@ -9,16 +9,16 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 
 @DataMongoTest
 @Import(MongoConfig::class)
-class ItemRepositoryTest(
+class TodoRepositoryTest(
     private val mongoTemplate: ReactiveMongoTemplate,
-    private val repository: ItemRepository
+    private val repository: TodoRepository
 ) : StringSpec() {
     init {
         "save data then date property" {
             // given
-            val item = Item("title", ItemStatus.DONE)
+            val todo = Todo("title", TodoStatus.DONE)
             // when
-            val actual = repository.save(item).block()
+            val actual = repository.save(todo).block()
             // then
             actual?.id.shouldNotBeNull()
             actual?.createdAt.shouldNotBeNull()
