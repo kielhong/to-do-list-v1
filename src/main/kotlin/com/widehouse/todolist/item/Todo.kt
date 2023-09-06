@@ -9,7 +9,8 @@ import java.time.LocalDateTime
 @Document
 class Todo(
     var title: String,
-    var status: TodoStatus
+    var status: TodoStatus,
+    var dueDate: LocalDateTime?
 ) {
     @Id
     lateinit var id: String
@@ -20,8 +21,9 @@ class Todo(
     @LastModifiedDate
     lateinit var updatedAt: LocalDateTime
 
-    fun update(title: String, status: TodoStatus) {
+    fun update(title: String, status: TodoStatus, dueDate: LocalDateTime?) {
         this.title = title
         this.status = status
+        this.dueDate = dueDate
     }
 }

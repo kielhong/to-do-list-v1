@@ -9,6 +9,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class TodoServiceTest : StringSpec() {
     private val todoRepository: TodoRepository = mockk()
@@ -20,22 +22,18 @@ class TodoServiceTest : StringSpec() {
             val item = TodoFixtures.todo
             every { todoRepository.save(any()) } returns Mono.just(item)
             // when
-            val request = TodoRequest("title")
+            val request = TodoRequest("title", TodoStatus.TODO, LocalDateTime.now().plusDays(1))
             val actual = service.createItem(request)
             // then
             StepVerifier.create(actual)
-                .assertNext {
-                    it.id shouldBe item.id
-                    it.title shouldBe item.title
-                    it.status shouldBe item.status
-                }
+                .assertNext { it shouldBe item }
                 .verifyComplete()
         }
 
         "update Item" {
             // given
             val id = 1L
-            val request = TodoRequest("title doing", TodoStatus.DOING)
+            val request = TodoRequest("title doing", TodoStatus.DOING, null)
             val updatedItem = TodoFixtures.doing
             every { todoRepository.findById(id) } returns Mono.just(TodoFixtures.todo)
             every { todoRepository.save(any()) } returns Mono.just(updatedItem)
@@ -50,6 +48,7 @@ class TodoServiceTest : StringSpec() {
                     withArg {
                         it.title shouldBe request.title
                         it.status shouldBe request.status
+                        it.dueDate shouldBe request.dueDate
                     }
                 )
             }

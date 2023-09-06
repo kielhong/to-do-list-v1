@@ -16,7 +16,7 @@ class TodoService(
         return todoRepository.findById(id)
             .map {
                 it.apply {
-                    update(request.title, request.status)
+                    update(request.title, request.status, request.dueDate)
                 }
             }
             .flatMap {
