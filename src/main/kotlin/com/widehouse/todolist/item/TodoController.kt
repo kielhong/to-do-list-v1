@@ -1,7 +1,7 @@
 package com.widehouse.todolist.item
 
 import com.widehouse.todolist.item.dto.CommandResponse
-import com.widehouse.todolist.item.dto.ItemRequest
+import com.widehouse.todolist.item.dto.TodoRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -12,23 +12,23 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("items")
-class ItemController(
-    private val itemService: ItemService
+class TodoController(
+    private val todoService: TodoService
 ) {
     @PostMapping
     fun createItem(
-        @RequestBody request: ItemRequest
+        @RequestBody request: TodoRequest
     ): Mono<CommandResponse> {
-        return itemService.createItem(request)
+        return todoService.createItem(request)
             .map { CommandResponse(it.id) }
     }
 
     @PutMapping("{id}")
     fun changeItemStatus(
         @PathVariable id: Long,
-        @RequestBody request: ItemRequest
+        @RequestBody request: TodoRequest
     ): Mono<CommandResponse> {
-        return itemService.updateItem(id, request)
+        return todoService.updateItem(id, request)
             .map { CommandResponse(it.id) }
     }
 }

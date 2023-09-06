@@ -55,6 +55,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Xshare:off")
 }
 
 tasks.jacocoTestReport {
