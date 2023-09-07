@@ -1,5 +1,5 @@
 package com.widehouse.todolist.item
 
-enum class TodoStatus {
-    TODO, DOING, DONE;
+enum class TodoStatus(val order: Int) {
+    TODO(1), DOING(2), DONE(3);
 }

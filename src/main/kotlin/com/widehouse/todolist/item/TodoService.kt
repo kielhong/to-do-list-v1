@@ -2,9 +2,13 @@ package com.widehouse.todolist.item
 
 import com.widehouse.todolist.item.dto.TodoRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.Comparator.comparing
 
 @Service
+@Transactional
 class TodoService(
     private val todoRepository: TodoRepository
 ) {
@@ -22,5 +26,13 @@ class TodoService(
             .flatMap {
                 todoRepository.save(it)
             }
+    }
+
+    fun listTodos(): Flux<Todo> {
+        return todoRepository.findAll()
+            .sort(
+                comparing(Todo::status, comparing(TodoStatus::order))
+                    .thenComparing(Todo::dueDate, nullsFirst())
+            )
     }
 }
