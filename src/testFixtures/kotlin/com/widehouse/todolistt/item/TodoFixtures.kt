@@ -6,13 +6,16 @@ import org.springframework.test.util.ReflectionTestUtils
 import java.time.LocalDateTime
 
 object TodoFixtures {
-    val todo = Todo("title", TodoStatus.TODO, LocalDateTime.now().plusDays(1)).apply {
-        ReflectionTestUtils.setField(this, "id", "1")
+    fun todo(
+        id: String,
+        title: String,
+        status: TodoStatus,
+        dueDate: LocalDateTime? = LocalDateTime.now().plusDays(1)
+    ) = Todo(title, status, dueDate).apply {
+        ReflectionTestUtils.setField(this, "id", id)
     }
-    val doing = Todo("title doing", TodoStatus.DOING, LocalDateTime.now().plusDays(1)).apply {
-        ReflectionTestUtils.setField(this, "id", "1")
-    }
-    val done = Todo("title done", TodoStatus.DONE, LocalDateTime.now().plusDays(1)).apply {
-        ReflectionTestUtils.setField(this, "id", "1")
-    }
+
+    val todo = todo("1", "title todo", TodoStatus.TODO)
+    val doing = todo("1", "title doing", TodoStatus.DOING)
+    val done = todo("1", "title done", TodoStatus.DONE)
 }
