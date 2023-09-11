@@ -24,6 +24,12 @@ class TodoController(
             .map { TodoResponse.from(it) }
     }
 
+    @GetMapping(params = ["status"])
+    fun listTodos(status: TodoStatus): Flux<TodoResponse> {
+        return todoService.listTodos(status)
+            .map { TodoResponse.from(it) }
+    }
+
     @PostMapping
     fun createItem(
         @RequestBody request: TodoRequest

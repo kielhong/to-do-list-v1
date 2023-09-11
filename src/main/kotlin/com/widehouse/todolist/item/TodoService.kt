@@ -35,4 +35,14 @@ class TodoService(
                     .thenComparing(Todo::dueDate, nullsFirst())
             )
     }
+
+    fun listTodos(status: TodoStatus): Flux<Todo> {
+        val predict = QTodo.todo.status.eq(status)
+
+        return todoRepository.findAll(predict)
+            .sort(
+                comparing(Todo::status, comparing(TodoStatus::order))
+                    .thenComparing(Todo::dueDate, nullsFirst())
+            )
+    }
 }

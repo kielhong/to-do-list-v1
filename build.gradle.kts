@@ -30,8 +30,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    implementation("com.querydsl:querydsl-mongodb:5.0.0") {
+        exclude("org.mongodb", "mongo-java-driver")
+    }
+    kapt("com.querydsl:querydsl-apt")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
@@ -40,10 +42,13 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
 
     testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
+}
 
-    runtimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
+kapt {
+    annotationProcessor("org.springframework.data.mongodb.repository.support.MongoAnnotationProcessor")
 }
 
 tasks.withType<KotlinCompile> {
@@ -73,6 +78,10 @@ tasks.jacocoTestReport {
 
 tasks.check {
     finalizedBy(tasks.jacocoTestReport)
+}
+
+querydsl {
+    springDataMongo = true
 }
 
 idea {
