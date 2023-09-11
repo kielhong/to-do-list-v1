@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 data class TodoResponse(
     val title: String,
-    val status: TodoStatus = TodoStatus.TODO,
+    val status: TodoStatus,
     val dueDate: LocalDateTime?
 ) {
     companion object {

@@ -25,7 +25,7 @@ class TodoControllerTest(
     override fun extensions() = listOf(SpringExtension)
 
     init {
-        "item create" {
+        "todo create" {
             // given
             val createdItem = todo
             every { todoService.createItem(any()) } returns Mono.just(createdItem)
@@ -51,7 +51,7 @@ class TodoControllerTest(
             }
         }
 
-        "item update" {
+        "todo update" {
             // given
             val id = 2L
             val updatedItem = doing
@@ -79,21 +79,39 @@ class TodoControllerTest(
             }
         }
 
-        "item list sorted" {
-            // given
-            val todos = mutableListOf<Todo>()
-            todos.addAll((1..3).map { todo(it.toString(), "todo", TodoStatus.TODO) })
-            todos.addAll((11..13).map { todo(it.toString(), "doing", TodoStatus.DOING) })
-            todos.addAll((21..23).map { todo(it.toString(), "doing", TodoStatus.DONE) })
-            every { todoService.listTodos() } returns Flux.fromIterable(todos)
-            // when
-            val response = webClient
-                .get()
-                .uri("/todos")
-                .exchange()
-            // then
-            response.expectStatus().isOk
-            response.expectBody().jsonPath("$.size()").isEqualTo(todos.size)
+        "todos list" - {
+            "list all todos" {
+                // given
+                val todos = mutableListOf<Todo>()
+                todos.addAll((1..3).map { todo(it.toString(), "todo", TodoStatus.TODO) })
+                todos.addAll((11..13).map { todo(it.toString(), "doing", TodoStatus.DOING) })
+                todos.addAll((21..23).map { todo(it.toString(), "doing", TodoStatus.DONE) })
+                every { todoService.listTodos() } returns Flux.fromIterable(todos)
+                // when
+                val response = webClient
+                    .get()
+                    .uri("/todos")
+                    .exchange()
+                // then
+                response.expectStatus().isOk
+                response.expectBody().jsonPath("$.size()").isEqualTo(todos.size)
+            }
+
+            "list by status" {
+                val todos = mutableListOf<Todo>()
+                todos.addAll((1..3).map { todo(it.toString(), "done", TodoStatus.DONE) })
+                every { todoService.listTodos(any()) } returns Flux.fromIterable(todos)
+                // when
+                val response = webClient
+                    .get()
+                    .uri("/todos?status={status}", TodoStatus.DONE)
+                    .exchange()
+                // then
+                response.expectStatus().isOk
+                response.expectBody()
+                    .jsonPath("$.size()").isEqualTo(todos.size)
+                    .jsonPath("$.[0].status").isEqualTo(TodoStatus.DONE.toString())
+            }
         }
     }
 }

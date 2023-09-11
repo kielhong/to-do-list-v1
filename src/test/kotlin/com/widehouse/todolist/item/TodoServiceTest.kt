@@ -1,8 +1,9 @@
 package com.widehouse.todolist.item
 
+import com.querydsl.core.types.Predicate
 import com.widehouse.todolist.item.dto.TodoRequest
 import com.widehouse.todolistt.item.TodoFixtures
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
@@ -13,12 +14,12 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.time.LocalDateTime
 
-class TodoServiceTest : StringSpec() {
+class TodoServiceTest : FreeSpec() {
     private val todoRepository: TodoRepository = mockk()
     private val service = TodoService(todoRepository)
 
     init {
-        "create Item" {
+        "create Todo" {
             // given
             val item = TodoFixtures.todo
             every { todoRepository.save(any()) } returns Mono.just(item)
@@ -31,7 +32,7 @@ class TodoServiceTest : StringSpec() {
                 .verifyComplete()
         }
 
-        "update Item" {
+        "update Todo" {
             // given
             val id = 1L
             val request = TodoRequest("title doing", TodoStatus.DOING, null)
@@ -55,37 +56,63 @@ class TodoServiceTest : StringSpec() {
             }
         }
 
-        "list Todos" {
-            // given
-            val todos = listOf(
-                Pair(TodoStatus.DONE, LocalDateTime.now()),
-                Pair(TodoStatus.DOING, LocalDateTime.now()),
-                Pair(TodoStatus.TODO, LocalDateTime.now()),
-                Pair(TodoStatus.TODO, null)
-            )
-                .mapIndexed { index, pair ->
-                    TodoFixtures.todo(index.toString(), "title $index", pair.first, pair.second)
-                }
-            every { todoRepository.findAll() } returns Flux.fromIterable(todos)
-            // when
-            val actual = service.listTodos()
-            // then
-            StepVerifier.create(actual)
-                .assertNext {
-                    it.status shouldBe TodoStatus.TODO
-                    it.dueDate shouldBe null
-                }
-                .assertNext {
-                    it.status shouldBe TodoStatus.TODO
-                    it.dueDate shouldNotBe null
-                }
-                .assertNext {
-                    it.status shouldBe TodoStatus.DOING
-                }
-                .assertNext {
-                    it.status shouldBe TodoStatus.DONE
-                }
-                .verifyComplete()
+        "list Todos" - {
+            "list all Toods" {
+                // given
+                val todos = listOf(
+                    Pair(TodoStatus.DONE, LocalDateTime.now()),
+                    Pair(TodoStatus.DOING, LocalDateTime.now()),
+                    Pair(TodoStatus.TODO, LocalDateTime.now()),
+                    Pair(TodoStatus.TODO, null)
+                )
+                    .mapIndexed { index, pair ->
+                        TodoFixtures.todo(index.toString(), "title $index", pair.first, pair.second)
+                    }
+                every { todoRepository.findAll() } returns Flux.fromIterable(todos)
+                // when
+                val actual = service.listTodos()
+                // then
+                StepVerifier.create(actual)
+                    .assertNext {
+                        it.status shouldBe TodoStatus.TODO
+                        it.dueDate shouldBe null
+                    }
+                    .assertNext {
+                        it.status shouldBe TodoStatus.TODO
+                        it.dueDate shouldNotBe null
+                    }
+                    .assertNext {
+                        it.status shouldBe TodoStatus.DOING
+                    }
+                    .assertNext {
+                        it.status shouldBe TodoStatus.DONE
+                    }
+                    .verifyComplete()
+            }
+
+            "list by status" {
+                val todos = listOf(
+                    Pair(TodoStatus.TODO, LocalDateTime.now()),
+                    Pair(TodoStatus.TODO, null)
+                )
+                    .mapIndexed { index, pair ->
+                        TodoFixtures.todo(index.toString(), "title $index", pair.first, pair.second)
+                    }
+                every { todoRepository.findAll(ofType(Predicate::class)) } returns Flux.fromIterable(todos)
+                // when
+                val actual = service.listTodos(TodoStatus.TODO)
+                // then
+                StepVerifier.create(actual)
+                    .assertNext {
+                        it.status shouldBe TodoStatus.TODO
+                        it.dueDate shouldBe null
+                    }
+                    .assertNext {
+                        it.status shouldBe TodoStatus.TODO
+                        it.dueDate shouldNotBe null
+                    }
+                    .verifyComplete()
+            }
         }
     }
 }
